@@ -93,7 +93,25 @@ th { color: var(--muted); font-size: 12px; }
     <h2>Welcome to Madrasa Fest</h2>
     <p class="muted">Register students, organise competitions, enter marks and view rankings.</p>
     <p>Teams: Team 1, Team 2 and Team 3</p>
-    <p>Chest numbers: 100–199</p>
+    <p>function nextChestNumber(team) {
+const teamRanges = {
+"Team 1": [100, 199],
+"Team 2": [200, 299],
+"Team 3": [300, 399]
+};
+
+const range = teamRanges[team];
+if (!range) return null;
+
+for (let n = range[0]; n <= range[1]; n++) {
+if (!students.some(s => Number(s.chest) === n)) {
+return n;
+}
+}
+
+return null;
+}
+  </p>
   </div>
 </section>
 
