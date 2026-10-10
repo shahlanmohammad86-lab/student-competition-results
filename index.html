@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Madrasa Fest | Competition Manager</title>
+<title>Madrasa Fest</title>
+
 <style>
 :root {
   --bg: #0b1020;
@@ -15,60 +15,128 @@
   --accent: #7c9cff;
   --green: #51d6b2;
 }
+
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font: 15px/1.5 system-ui, sans-serif;
 }
-.wrap { max-width: 1100px; margin: auto; padding: 18px; }
+
+.wrap {
+  max-width: 1100px;
+  margin: auto;
+  padding: 18px;
+}
+
 header { padding: 20px 0; }
-h1 { margin: 4px 0; font-size: 30px; }
+h1 { margin: 4px 0; font-size: 28px; }
 h2 { margin-top: 0; }
 .muted { color: var(--muted); }
-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 15px 0; }
+
+nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
 button {
-  background: var(--accent); color: #081126;
-  border: 0; border-radius: 9px; padding: 10px 14px;
-  font-weight: 700; cursor: pointer;
+  background: var(--accent);
+  color: #081126;
+  border: 0;
+  border-radius: 9px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 3px 0;
 }
-nav button { background: #1b2942; color: var(--text); }
-nav button.active { background: var(--accent); color: #081126; }
+
+nav button {
+  background: #1b2942;
+  color: var(--text);
+}
+
+nav button.active {
+  background: var(--accent);
+  color: #081126;
+}
+
 .card {
-  background: var(--panel); border: 1px solid var(--line);
-  border-radius: 14px; padding: 17px; margin-bottom: 15px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 17px;
+  margin-bottom: 15px;
 }
-.grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
-label { display: block; margin: 10px 0 5px; color: #c5d3ed; font-size: 13px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+  color: #c5d3ed;
+  font-size: 13px;
+}
+
 input, select, textarea {
-  width: 100%; padding: 10px; border-radius: 8px;
-  background: #0c1425; color: var(--text);
-  border: 1px solid #34435f; margin-bottom: 8px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: #0c1425;
+  color: var(--text);
+  border: 1px solid #34435f;
+  margin-bottom: 8px;
 }
+
 textarea { min-height: 120px; }
 table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); }
+
+th, td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
 th { color: var(--muted); font-size: 12px; }
 .tablewrap { overflow-x: auto; }
 .hidden { display: none !important; }
-.note { background: #132a2a; padding: 12px; border-radius: 10px; color: #b9f4e4; }
-@media(max-width:650px) {
+.message { color: var(--green); }
+
+.note {
+  background: #132a2a;
+  padding: 12px;
+  border-radius: 10px;
+  color: #b9f4e4;
+  margin-bottom: 15px;
+}
+
+@media(max-width: 650px) {
   .grid { grid-template-columns: 1fr; }
   .wrap { padding: 12px; }
 }
 </style>
 </head>
+
 <body>
 <div class="wrap">
+
 <header>
   <p class="muted">COMPETITION CONTROL DESK</p>
   <h1 id="festTitle">Madrasa Fest</h1>
   <p class="muted">Students · Competitions · Marks · Results</p>
 </header>
+
 <div class="note">
-  Temporary setup. Team and fest names can be changed later.
+  Team 1: 100–199 | Team 2: 200–299 | Team 3: 300–399
 </div>
+
 <nav>
   <button class="active" onclick="showPage('home',this)">Overview</button>
   <button onclick="showPage('students',this)">Students</button>
@@ -77,7 +145,6 @@ th { color: var(--muted); font-size: 12px; }
   <button onclick="showPage('results',this)">Results</button>
   <button onclick="showPage('settings',this)">Settings</button>
 </nav>
-
 <section id="home" class="page">
   <div class="grid">
     <div class="card">
@@ -92,26 +159,9 @@ th { color: var(--muted); font-size: 12px; }
   <div class="card">
     <h2>Welcome to Madrasa Fest</h2>
     <p class="muted">Register students, organise competitions, enter marks and view rankings.</p>
-    <p>Teams: Team 1, Team 2 and Team 3</p>
-    <p>function nextChestNumber(team) {
-const teamRanges = {
-"Team 1": [100, 199],
-"Team 2": [200, 299],
-"Team 3": [300, 399]
-};
-
-const range = teamRanges[team];
-if (!range) return null;
-
-for (let n = range[0]; n <= range[1]; n++) {
-if (!students.some(s => Number(s.chest) === n)) {
-return n;
-}
-}
-
-return null;
-}
-  </p>
+    <p>Team 1: Chest numbers 100–199</p>
+    <p>Team 2: Chest numbers 200–299</p>
+    <p>Team 3: Chest numbers 300–399</p>
   </div>
 </section>
 
@@ -141,7 +191,7 @@ return null;
     <input id="studentClass" placeholder="e.g. Class 7">
 
     <button onclick="addStudent()">Add Student</button>
-    <p id="studentMessage"></p>
+    <p id="studentMessage" class="message"></p>
   </div>
 
   <div class="card">
@@ -164,9 +214,9 @@ return null;
       <option>Super Senior (9th–12th)</option>
     </select>
 
-    <textarea id="bulkNames" placeholder="Amina&#10;Hafsa&#10;Muhammad"></textarea>
+    <textarea id="bulkNames" placeholder="Enter one name per line"></textarea>
     <button onclick="bulkAdd()">Add All Students</button>
-    <p id="bulkMessage"></p>
+    <p id="bulkMessage" class="message"></p>
   </div>
 
   <div class="card">
@@ -202,7 +252,7 @@ return null;
     </select>
 
     <button onclick="addCompetition()">Save Competition</button>
-    <p id="competitionMessage"></p>
+    <p id="competitionMessage" class="message"></p>
   </div>
 
   <div class="card">
@@ -236,8 +286,9 @@ return null;
 
     <button onclick="renderMarks()">Load Students</button>
     <div id="marksTable" class="tablewrap"></div>
+
     <button onclick="saveMarks()">Save Marks</button>
-    <p id="marksMessage"></p>
+    <p id="marksMessage" class="message"></p>
   </div>
 </section>
 
@@ -266,6 +317,7 @@ return null;
 
     <button onclick="renderResults()">Show Rankings</button>
     <div id="resultsTable" class="tablewrap"></div>
+
     <button onclick="window.print()">Print Results</button>
   </div>
 </section>
@@ -273,17 +325,13 @@ return null;
 <section id="settings" class="page hidden">
   <div class="card">
     <h2>Fest Settings</h2>
-
     <label>Fest Name</label>
     <input id="festNameInput" value="Madrasa Fest">
     <button onclick="saveFestName()">Save Fest Name</button>
-
-    <p class="muted">You can change the fest name and team names when they are decided.</p>
   </div>
 
   <div class="card">
     <h2>Team Names</h2>
-
     <label>Team 1</label>
     <input id="teamName1" value="Team 1">
 
@@ -294,14 +342,13 @@ return null;
     <input id="teamName3" value="Team 3">
 
     <button onclick="saveTeamNames()">Save Team Names</button>
-    <p id="settingsMessage"></p>
+    <p id="settingsMessage" class="message"></p>
   </div>
 </section>
 
- <footer class="muted" style="text-align:center;padding:25px">
+<footer class="muted" style="text-align:center;padding:25px">
   Madrasa Fest · Competition Management
 </footer>
-</div>
 <script>
 const divisions = [
   "Kiddies",
@@ -311,10 +358,16 @@ const divisions = [
   "Super Senior (9th–12th)"
 ];
 
+const teams = ["Team 1", "Team 2", "Team 3"];
+
 let students = JSON.parse(localStorage.getItem("festStudents") || "[]");
 let competitions = JSON.parse(localStorage.getItem("festCompetitions") || "[]");
 let marks = JSON.parse(localStorage.getItem("festMarks") || "{}");
-let settings = JSON.parse(localStorage.getItem("festSettings") || '{"festName":"Madrasa Fest","teams":["Team 1","Team 2","Team 3"]}');
+
+let settings = JSON.parse(
+  localStorage.getItem("festSettings") ||
+  '{"festName":"Madrasa Fest","teams":["Team 1","Team 2","Team 3"]}'
+);
 
 function saveData() {
   localStorage.setItem("festStudents", JSON.stringify(students));
@@ -323,11 +376,29 @@ function saveData() {
   localStorage.setItem("festSettings", JSON.stringify(settings));
 }
 
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[ch]));
+}
+
 function showPage(id, button) {
-  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.add("hidden");
+  });
+
   document.getElementById(id).classList.remove("hidden");
-  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+
+  document.querySelectorAll("nav button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
   if (button) button.classList.add("active");
+
   updateOverview();
   updateCompetitionSelects();
 }
@@ -337,10 +408,22 @@ function updateOverview() {
   document.getElementById("totalCompetitions").textContent = competitions.length;
 }
 
-function nextChestNumber() {
-  for (let n = 100; n <= 199; n++) {
-    if (!students.some(s => s.chest === n)) return n;
+function nextChestNumber(team) {
+  const ranges = {
+    "Team 1": [100, 199],
+    "Team 2": [200, 299],
+    "Team 3": [300, 399]
+  };
+
+  const range = ranges[team];
+  if (!range) return null;
+
+  for (let n = range[0]; n <= range[1]; n++) {
+    if (!students.some(s => Number(s.chest) === n)) {
+      return n;
+    }
   }
+
   return null;
 }
 
@@ -349,64 +432,120 @@ function addStudent() {
   const team = document.getElementById("studentTeam").value;
   const division = document.getElementById("studentDivision").value;
   const studentClass = document.getElementById("studentClass").value.trim();
+  const message = document.getElementById("studentMessage");
 
   if (!name) {
-    document.getElementById("studentMessage").textContent = "Enter the student name.";
+    message.textContent = "Please enter the student's name.";
     return;
   }
 
-  const chest = nextChestNumber();
+  const chest = nextChestNumber(team);
+
   if (chest === null) {
-    document.getElementById("studentMessage").textContent = "All chest numbers 100–199 are used.";
+    message.textContent = "This team's chest-number range is full.";
     return;
   }
 
   students.push({ name, team, division, studentClass, chest });
+
   saveData();
+
   document.getElementById("studentName").value = "";
   document.getElementById("studentClass").value = "";
-  document.getElementById("studentMessage").textContent = "Student added. Chest number: " + chest;
+
+  message.textContent = "Student added successfully. Chest number: " + chest;
+
   renderStudents();
   updateOverview();
 }
 
 function bulkAdd() {
   const names = document.getElementById("bulkNames").value
-    .split(/\r?\n/).map(n => n.trim()).filter(Boolean);
+    .split(/\r?\n/)
+    .map(name => name.trim())
+    .filter(Boolean);
+
   const team = document.getElementById("bulkTeam").value;
   const division = document.getElementById("bulkDivision").value;
+  const message = document.getElementById("bulkMessage");
+
+  if (!names.length) {
+    message.textContent = "Please enter at least one student name.";
+    return;
+  }
+
   let added = 0;
 
   for (const name of names) {
-    const chest = nextChestNumber();
+    const chest = nextChestNumber(team);
+
     if (chest === null) break;
-    students.push({ name, team, division, studentClass: "", chest });
+
+    students.push({
+      name,
+      team,
+      division,
+      studentClass: "",
+      chest
+    });
+
     added++;
   }
 
   saveData();
+
   document.getElementById("bulkNames").value = "";
-  document.getElementById("bulkMessage").textContent =
-    added + " student(s) added." + (added < names.length ? " Chest numbers are full." : "");
+
+  message.textContent = added + " student(s) added successfully.";
+
+  if (added < names.length) {
+    message.textContent += " Some students could not be added because the team's range is full.";
+  }
+
   renderStudents();
   updateOverview();
 }
 
 function renderStudents() {
-  const q = (document.getElementById("studentSearch")?.value || "").toLowerCase();
+  const search = (
+    document.getElementById("studentSearch")?.value || ""
+  ).toLowerCase();
+
   const filtered = students.filter(s =>
-    s.name.toLowerCase().includes(q) || String(s.chest).includes(q)
+    String(s.name).toLowerCase().includes(search) ||
+    String(s.chest).includes(search)
   );
 
   const el = document.getElementById("studentTable");
+
   if (!filtered.length) {
-    el.innerHTML = "<p class='muted'>No students registered yet.</p>";
+    el.innerHTML = "<p class='muted'>No students found.</p>";
     return;
   }
 
-  el.innerHTML = `<table><thead><tr><th>Chest No.</th><th>Name</th><th>Team</th><th>Division</th><th>Class</th></tr></thead><tbody>${
-    filtered.map(s => `<tr><td>${s.chest}</td><td>${escapeHTML(s.name)}</td><td>${escapeHTML(s.team)}</td><td>${escapeHTML(s.division)}</td><td>${escapeHTML(s.studentClass)}</td></tr>`).join("")
-  }</tbody></table>`;
+  el.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Chest No.</th>
+          <th>Name</th>
+          <th>Team</th>
+          <th>Division</th>
+          <th>Class</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map(s => `
+          <tr>
+            <td>${Number(s.chest)}</td>
+            <td>${escapeHTML(s.name)}</td>
+            <td>${escapeHTML(s.team)}</td>
+            <td>${escapeHTML(s.division)}</td>
+            <td>${escapeHTML(s.studentClass || "")}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>`;
 }
 
 function addCompetition() {
@@ -414,16 +553,27 @@ function addCompetition() {
   const type = document.getElementById("competitionType").value;
   const max = Number(document.getElementById("maximumMarks").value);
   const division = document.getElementById("competitionDivision").value;
+  const message = document.getElementById("competitionMessage");
 
   if (!name || !Number.isFinite(max) || max <= 0) {
-    document.getElementById("competitionMessage").textContent = "Enter a competition name and valid maximum marks.";
+    message.textContent = "Enter a name and valid maximum marks.";
     return;
   }
 
-  competitions.push({ id: Date.now(), name, type, max, division });
+  competitions.push({
+    id: Date.now() + Math.random(),
+    name,
+    type,
+    max,
+    division
+  });
+
   saveData();
+
   document.getElementById("competitionName").value = "";
-  document.getElementById("competitionMessage").textContent = "Competition saved.";
+
+  message.textContent = "Competition saved successfully.";
+
   renderCompetitions();
   updateCompetitionSelects();
   updateOverview();
@@ -431,142 +581,238 @@ function addCompetition() {
 
 function renderCompetitions() {
   const el = document.getElementById("competitionTable");
+
   if (!competitions.length) {
     el.innerHTML = "<p class='muted'>No competitions added yet.</p>";
     return;
   }
 
-  el.innerHTML = `<table><thead><tr><th>Name</th><th>Type</th><th>Division</th><th>Max Marks</th></tr></thead><tbody>${
-    competitions.map(c => `<tr><td>${escapeHTML(c.name)}</td><td>${escapeHTML(c.type)}</td><td>${escapeHTML(c.division)}</td><td>${c.max}</td></tr>`).join("")
-  }</tbody></table>`;
+  el.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Competition</th>
+          <th>Type</th>
+          <th>Division</th>
+          <th>Maximum Marks</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${competitions.map(c => `
+          <tr>
+            <td>${escapeHTML(c.name)}</td>
+            <td>${escapeHTML(c.type)}</td>
+            <td>${escapeHTML(c.division)}</td>
+            <td>${Number(c.max)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>`;
 }
 
 function updateCompetitionSelects() {
   ["marksCompetition", "resultsCompetition"].forEach(id => {
     const select = document.getElementById(id);
-    if (!select) return;
-    const oldValue = select.value;
+    const previous = select.value;
+
     select.innerHTML = "";
+
     if (!competitions.length) {
       select.innerHTML = "<option value=''>Add a competition first</option>";
       return;
     }
+
     competitions.forEach(c => {
       const option = document.createElement("option");
       option.value = c.id;
-      option.textContent = c.name + " (" + c.type + " — " + c.division + ")";
+      option.textContent = c.name + " (" + c.type + ")";
       select.appendChild(option);
     });
-    if (oldValue && competitions.some(c => String(c.id) === oldValue)) {
-      select.value = oldValue;
+
+    if ([...select.options].some(o => o.value === previous)) {
+      select.value = previous;
     }
   });
 }
 
-function getSelectedCompetition(selectId) {
-  const id = Number(document.getElementById(selectId).value);
-  return competitions.find(c => c.id === id);
+function getCompetition(selectId) {
+  const id = document.getElementById(selectId).value;
+  return competitions.find(c => String(c.id) === id);
 }
 
 function renderMarks() {
-  const c = getSelectedCompetition("marksCompetition");
+  const competition = getCompetition("marksCompetition");
   const team = document.getElementById("marksTeam").value;
   const division = document.getElementById("marksDivision").value;
   const el = document.getElementById("marksTable");
 
-  if (!c) {
-    el.innerHTML = "<p class='muted'>Add a competition first.</p>";
+  if (!competition) {
+    el.innerHTML = "<p class='muted'>Create a competition first.</p>";
+    return;
+  }
+
+  if (competition.division !== division) {
+    el.innerHTML = "<p class='muted'>Select the competition's division: " +
+      escapeHTML(competition.division) + ".</p>";
     return;
   }
 
   const eligible = students.filter(s =>
-    s.team === team && s.division === division && s.division === c.division
+    s.team === team && s.division === division
   );
 
   if (!eligible.length) {
-    el.innerHTML = "<p class='muted'>No matching students for this competition, team and division.</p>";
+    el.innerHTML = "<p class='muted'>No students found for this selection.</p>";
     return;
   }
 
-  el.innerHTML = `<table><thead><tr><th>Chest No.</th><th>Name</th><th>Marks / ${c.max}</th></tr></thead><tbody>${
-    eligible.map(s => {
-      const key = `${c.id}_${s.chest}`;
-      const value = marks[key] ?? "";
-      return `<tr><td>${s.chest}</td><td>${escapeHTML(s.name)}</td><td><input class="scoreInput" data-key="${key}" type="number" min="0" max="${c.max}" value="${value}" placeholder="Marks"></td></tr>`;
-    }).join("")
-  }</tbody></table>`;
+  el.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Chest No.</th>
+          <th>Student</th>
+          <th>Marks / ${Number(competition.max)}</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${eligible.map(s => {
+          const key = competition.id + "_" + s.chest;
+          const value = marks[key] ?? "";
+
+          return `
+            <tr>
+              <td>${Number(s.chest)}</td>
+              <td>${escapeHTML(s.name)}</td>
+              <td>
+                <input
+                  class="scoreInput"
+                  data-key="${key}"
+                  type="number"
+                  min="0"
+                  max="${Number(competition.max)}"
+                  value="${value}"
+                  placeholder="Enter marks">
+              </td>
+            </tr>`;
+        }).join("")}
+      </tbody>
+    </table>`;
 }
 
 function saveMarks() {
-  const c = getSelectedCompetition("marksCompetition");
-  if (!c) {
-    document.getElementById("marksMessage").textContent = "Add a competition first.";
+  const competition = getCompetition("marksCompetition");
+  const message = document.getElementById("marksMessage");
+
+  if (!competition) {
+    message.textContent = "Create a competition first.";
     return;
   }
 
   const inputs = document.querySelectorAll(".scoreInput");
+
   for (const input of inputs) {
-    if (input.value !== "" && (Number(input.value) < 0 || Number(input.value) > c.max)) {
-      document.getElementById("marksMessage").textContent = "Marks must be between 0 and " + c.max + ".";
+    if (
+      input.value !== "" &&
+      (!Number.isFinite(Number(input.value)) ||
+       Number(input.value) < 0 ||
+       Number(input.value) > Number(competition.max))
+    ) {
+      message.textContent = "Marks must be between 0 and " + competition.max + ".";
       return;
     }
   }
 
   inputs.forEach(input => {
-    if (input.value === "") delete marks[input.dataset.key];
-    else marks[input.dataset.key] = Number(input.value);
+    if (input.value === "") {
+      delete marks[input.dataset.key];
+    } else {
+      marks[input.dataset.key] = Number(input.value);
+    }
   });
 
   saveData();
-  document.getElementById("marksMessage").textContent = "Marks saved.";
+  message.textContent = "Marks saved successfully.";
 }
 
 function renderResults() {
-  const c = getSelectedCompetition("resultsCompetition");
+  const competition = getCompetition("resultsCompetition");
   const team = document.getElementById("resultsTeam").value;
   const division = document.getElementById("resultsDivision").value;
   const el = document.getElementById("resultsTable");
 
-  if (!c) {
-    el.innerHTML = "<p class='muted'>Add a competition first.</p>";
+  if (!competition) {
+    el.innerHTML = "<p class='muted'>Create a competition first.</p>";
     return;
   }
 
-  if (division !== c.division) {
-    el.innerHTML = "<p class='muted'>This competition is for " + escapeHTML(c.division) + " division.</p>";
+  if (competition.division !== division) {
+    el.innerHTML = "<p class='muted'>This competition belongs to the " +
+      escapeHTML(competition.division) + " division.</p>";
     return;
   }
 
   const rows = students
     .filter(s => s.team === team && s.division === division)
-    .map(s => ({ ...s, score: marks[`${c.id}_${s.chest}`] }))
+    .map(s => ({
+      ...s,
+      score: marks[competition.id + "_" + s.chest]
+    }))
     .filter(s => s.score !== undefined)
     .sort((a, b) => b.score - a.score);
 
   if (!rows.length) {
-    el.innerHTML = "<p class='muted'>No marks have been entered for this selection yet.</p>";
+    el.innerHTML = "<p class='muted'>No marks have been entered yet.</p>";
     return;
   }
 
   let rank = 0;
   let previousScore = null;
-  el.innerHTML = `<table><thead><tr><th>Rank</th><th>Chest No.</th><th>Name</th><th>Marks</th></tr></thead><tbody>${
-    rows.map((s, i) => {
-      if (s.score !== previousScore) rank = i + 1;
-      previousScore = s.score;
-      return `<tr><td>${rank}</td><td>${s.chest}</td><td>${escapeHTML(s.name)}</td><td>${s.score} / ${c.max}</td></tr>`;
-    }).join("")
-  }</tbody></table>`;
+
+  el.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Chest No.</th>
+          <th>Name</th>
+          <th>Marks</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map((s, i) => {
+          if (s.score !== previousScore) rank = i + 1;
+          previousScore = s.score;
+
+          return `
+            <tr>
+              <td>${rank}</td>
+              <td>${Number(s.chest)}</td>
+              <td>${escapeHTML(s.name)}</td>
+              <td>${s.score} / ${Number(competition.max)}</td>
+            </tr>`;
+        }).join("")}
+      </tbody>
+    </table>`;
 }
 
 function saveFestName() {
   const name = document.getElementById("festNameInput").value.trim();
-  if (!name) return;
+
+  if (!name) {
+    document.getElementById("settingsMessage").textContent =
+      "Enter a fest name first.";
+    return;
+  }
+
   settings.festName = name;
   document.getElementById("festTitle").textContent = name;
   document.title = name + " | Competition Manager";
+
   saveData();
-  document.getElementById("settingsMessage").textContent = "Fest name saved.";
+
+  document.getElementById("settingsMessage").textContent =
+    "Fest name saved.";
 }
 
 function saveTeamNames() {
@@ -575,22 +821,24 @@ function saveTeamNames() {
     document.getElementById("teamName2").value.trim() || "Team 2",
     document.getElementById("teamName3").value.trim() || "Team 3"
   ];
-  saveData();
-  document.getElementById("settingsMessage").textContent = "Team names saved. Team-name changes apply to new setup labels only.";
-}
 
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, ch => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[ch]));
+  saveData();
+
+  document.getElementById("settingsMessage").textContent =
+    "Team names saved. Chest-number ranges remain assigned to each team.";
 }
 
 function loadSettings() {
-  document.getElementById("festTitle").textContent = settings.festName || "Madrasa Fest";
-  document.getElementById("festNameInput").value = settings.festName || "Madrasa Fest";
-  document.title = (settings.festName || "Madrasa Fest") + " | Competition Manager";
-  (settings.teams || ["Team 1", "Team 2", "Team 3"]).forEach((name, i) => {
-    const input = document.getElementById("teamName" + (i + 1));
+  const festName = settings.festName || "Madrasa Fest";
+
+  document.getElementById("festTitle").textContent = festName;
+  document.getElementById("festNameInput").value = festName;
+  document.title = festName + " | Competition Manager";
+
+  const savedTeams = settings.teams || teams;
+
+  savedTeams.forEach((name, index) => {
+    const input = document.getElementById("teamName" + (index + 1));
     if (input) input.value = name;
   });
 }
@@ -601,6 +849,7 @@ renderCompetitions();
 updateCompetitionSelects();
 updateOverview();
 </script>
+
+</div>
 </body>
-</html>                                       </html>
- 
+</html>
