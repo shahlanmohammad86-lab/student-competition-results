@@ -31,4 +31,257 @@ input,select{width:100%;padding:12px;background:#0b1220;color:var(--text);border
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{text-align:left;padding:12px 9px;border-bottom:1px solid var(--line)}
 th{color:var(--muted)}
-.tablewrap{overflow
+.tablewrap{overflow-x:auto}
+.badge{display:inline-block;padding:5px 8px;border-radius:6px;background:#202d49;font-size:11px}
+.muted{color:var(--muted);font-size:13px}
+.empty{padding:22px;text-align:center;color:var(--muted)}
+.rank{font-size:20px;font-weight:bold;color:#ffd36a}
+.resulthead{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.resulthead select{max-width:320px}
+@media(max-width:600px){
+ main{padding:12px}
+ .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .formgrid{grid-template-columns:1fr}
+ .full{grid-column:auto}
+ header h1{font-size:20px}
+ .card,.panel{padding:13px}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>🏆 Competition Manager</h1>
+<p>Student Registration · Marks · Competition-wise Results</p>
+</header>
+<main>
+<nav id="nav">
+<button class="active" data-page="dashboard">Dashboard</button>
+<button data-page="students">Students</button>
+<button data-page="competitions">Competitions</button>
+<button data-page="marks">Enter Marks</button>
+<button data-page="results">Results</button>
+</nav>
+
+<section id="dashboard" class="page show">
+<div class="cards">
+<div class="card"><span>Total Students</span><strong id="totalStudents">0</strong></div>
+<div class="card"><span>Competitions</span><strong id="totalCompetitions">0</strong></div>
+<div class="card"><span>Marks Entries</span><strong id="totalMarks">0</strong></div>
+</div>
+<div class="panel">
+<h2>Welcome 👋</h2>
+<p class="muted">Manage student registrations, create Stage and Non-Stage competitions, enter marks and publish competition-wise rankings.</p>
+<h3>Getting started</h3>
+<p class="muted">1. Add your students.</p>
+<p class="muted">2. Create competitions and their divisions.</p>
+<p class="muted">3. Enter marks for each student.</p>
+<p class="muted">4. Open Results and select a competition and division.</p>
+</div>
+<div class="panel">
+<h2>Recent Students</h2>
+<div id="recent"></div>
+</div>
+</section>
+
+<section id="students" class="page">
+<div class="panel">
+<h2>Register Student</h2>
+<form id="studentForm">
+<div class="formgrid">
+<div class="full"><label>Student Name *</label><input id="studentName" required maxlength="100" placeholder="Enter full name"></div>
+<div><label>Chest Number</label><input value="Generated automatically" disabled></div>
+<div><label>Class / Group</label><input id="studentGroup" maxlength="50" placeholder="e.g. 2 PUC"></div>
+</div>
+<div class="actions"><button class="primary">Add Student</button></div>
+</form>
+<p class="muted">Chest numbers are automatically generated and assigned to each new student.</p>
+</div>
+<div class="panel">
+<h2>Registered Students</h2>
+<label>Search students</label><input id="studentSearch" placeholder="Search name or chest number">
+<div id="studentTable"></div>
+</div>
+</section>
+
+<section id="competitions" class="page">
+<div class="panel">
+<h2>Create Competition</h2>
+<form id="competitionForm">
+<label>Competition Name *</label>
+<input id="compName" required maxlength="100" placeholder="e.g. Arabic Speech">
+<div class="formgrid">
+<div><label>Competition Type *</label>
+<select id="compType"><option>Stage</option><option>Non-Stage</option></select></div>
+<div><label>Maximum Marks *</label>
+<input id="maxMarks" type="number" min="1" max="10000" value="100" required></div>
+<div class="full"><label>Divisions / Categories *</label>
+<input id="compDivisions" required placeholder="Junior, Senior, General">
+<p class="muted">Separate divisions with commas. Example: Junior, Senior, General.</p></div>
+</div>
+<div class="actions"><button class="primary">Create Competition</button></div>
+</form>
+</div>
+<div class="panel"><h2>All Competitions</h2><div id="competitionTable"></div></div>
+</section>
+
+<section id="marks" class="page">
+<div class="panel">
+<h2>Enter or Update Marks</h2>
+<form id="marksForm">
+<label>Competition *</label><select id="markCompetition" required></select>
+<label>Division *</label><select id="markDivision" required></select>
+<label>Student *</label><select id="markStudent" required></select>
+<label>Marks *</label><input id="markScore" type="number" min="0" required step="any" placeholder="Enter marks">
+<div class="actions"><button class="primary">Save Marks</button></div>
+<p class="muted" id="markHint">Choose a competition to see its maximum marks.</p>
+</form>
+</div>
+<div class="panel"><h2>Saved Marks</h2><div id="marksTable"></div></div>
+</section>
+
+<section id="results" class="page">
+<div class="panel">
+<h2>Competition Results</h2>
+<p class="muted">Rankings are calculated separately for each competition and division.</p>
+<label>Competition Type</label><select id="resultType"><option>Stage</option><option>Non-Stage</option></select>
+<label>Competition</label><select id="resultCompetition"></select>
+<label>Division</label><select id="resultDivision"></select>
+<div class="actions"><button onclick="renderResults()">Show Rankings</button><button onclick="window.print()">Print Results</button></div>
+</div>
+<div class="panel">
+<div class="resulthead"><h2>🏆 Rankings</h2><span class="badge" id="resultLabel">Results</span></div>
+<div id="resultsTable"></div>
+</div>
+</section>
+
+<p class="muted">Prototype version · Data is stored only in this browser.</p>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const load=(key,def)=>{try{return JSON.parse(localStorage.getItem(key))||def}catch(e){return def}};
+let students=load("cm_students",[]);
+let competitions=load("cm_competitions",[]);
+let marks=load("cm_marks",[]);
+let nextChest=load("cm_nextChest",1001);
+
+function save(){
+localStorage.setItem("cm_students",JSON.stringify(students));
+localStorage.setItem("cm_competitions",JSON.stringify(competitions));
+localStorage.setItem("cm_marks",JSON.stringify(marks));
+localStorage.setItem("cm_nextChest",JSON.stringify(nextChest));
+renderAll();
+}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function student(id){return students.find(s=>s.id===id)}
+function competition(id){return competitions.find(c=>c.id===id)}
+function showPage(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.toggle("show",p.id===id));
+document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+}
+document.querySelectorAll("#nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+
+$("studentForm").addEventListener("submit",e=>{
+e.preventDefault();
+students.push({id:crypto.randomUUID(),chest:nextChest++,name:$("studentName").value.trim(),group:$("studentGroup").value.trim()});
+$("studentName").value="";$("studentGroup").value="";
+save();
+});
+$("studentSearch").addEventListener("input",renderStudents);
+
+$("competitionForm").addEventListener("submit",e=>{
+e.preventDefault();
+let divisions=[...new Set($("compDivisions").value.split(",").map(x=>x.trim()).filter(Boolean))];
+if(!divisions.length){alert("Add at least one division.");return}
+competitions.push({id:crypto.randomUUID(),name:$("compName").value.trim(),type:$("compType").value,max:Number($("maxMarks").value),divisions});
+$("compName").value="";$("compDivisions").value="";
+save();
+});
+
+function fillSelect(id,items,placeholder,selected){
+let el=$(id),old=selected??el.value;
+el.innerHTML="";
+let first=document.createElement("option");first.value="";first.textContent=placeholder;el.appendChild(first);
+items.forEach(x=>{let o=document.createElement("option");o.value=x.value;o.textContent=x.label;el.appendChild(o)});
+if(items.some(x=>x.value===old))el.value=old;
+}
+function updateMarkChoices(){
+let c=competition($("markCompetition").value);
+fillSelect("markDivision",c?c.divisions.map(d=>({value:d,label:d})):[],"Choose division");
+fillSelect("markStudent",students.map(s=>({value:s.id,label:s.chest+" — "+s.name})),"Choose student");
+$("markHint").textContent=c?"Maximum marks: "+c.max:"Choose a competition to see its maximum marks.";
+$("markScore").max=c?c.max:"";
+}
+$("markCompetition").addEventListener("change",updateMarkChoices);
+$("marksForm").addEventListener("submit",e=>{
+e.preventDefault();
+let c=competition($("markCompetition").value),s=student($("markStudent").value);
+let division=$("markDivision").value,score=Number($("markScore").value);
+if(!c||!s||!division){alert("Choose a competition, division and student.");return}
+if(score<0||score>c.max){alert("Marks must be between 0 and "+c.max);return}
+let old=marks.find(m=>m.competitionId===c.id&&m.studentId===s.id&&m.division===division);
+if(old)old.score=score;
+else marks.push({id:crypto.randomUUID(),competitionId:c.id,studentId:s.id,division,score});
+$("markScore").value="";
+save();
+});
+
+$("resultType").addEventListener("change",updateResultChoices);
+$("resultCompetition").addEventListener("change",updateResultChoices);
+$("resultDivision").addEventListener("change",renderResults);
+
+function updateResultChoices(){
+let type=$("resultType").value;
+let cs=competitions.filter(c=>c.type===type);
+fillSelect("resultCompetition",cs.map(c=>({value:c.id,label:c.name})),"Choose competition");
+let c=competition($("resultCompetition").value);
+fillSelect("resultDivision",c?c.divisions.map(d=>({value:d,label:d})):[],"Choose division");
+renderResults();
+}
+
+function removeStudent(id){
+if(!confirm("Delete this student and their marks?"))return;
+students=students.filter(s=>s.id!==id);marks=marks.filter(m=>m.studentId!==id);save();
+}
+function removeCompetition(id){
+if(!confirm("Delete this competition and all its marks?"))return;
+competitions=competitions.filter(c=>c.id!==id);marks=marks.filter(m=>m.competitionId!==id);save();
+}
+function renderStudents(){
+let q=$("studentSearch").value.toLowerCase();
+let list=students.filter(s=>(s.name+" "+s.chest+" "+s.group).toLowerCase().includes(q));
+$("studentTable").innerHTML=list.length?`<div class="tablewrap"><table><tr><th>Chest No.</th><th>Name</th><th>Class/Group</th><th></th></tr>${list.map(s=>`<tr><td>${s.chest}</td><td>${esc(s.name)}</td><td>${esc(s.group)}</td><td><button class="danger" onclick="removeStudent('${s.id}')">Delete</button></td></tr>`).join("")}</table></div>`:'<div class="empty">No students found.</div>';
+$("recent").innerHTML=students.slice(-5).reverse().map(s=>`<p>${s.chest} · ${esc(s.name)}</p>`).join("")||'<p class="muted">No students added yet.</p>';
+}
+function renderCompetitions(){
+$("competitionTable").innerHTML=competitions.length?`<div class="tablewrap"><table><tr><th>Competition</th><th>Type</th><th>Max</th><th>Divisions</th><th></th></tr>${competitions.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.type)}</td><td>${c.max}</td><td>${c.divisions.map(esc).join(", ")}</td><td><button class="danger" onclick="removeCompetition('${c.id}')">Delete</button></td></tr>`).join("")}</table></div>`:'<div class="empty">No competitions created yet.</div>';
+}
+function renderMarks(){
+$("marksTable").innerHTML=marks.length?`<div class="tablewrap"><table><tr><th>Student</th><th>Competition</th><th>Division</th><th>Marks</th></tr>${marks.map(m=>{let s=student(m.studentId),c=competition(m.competitionId);return s&&c?`<tr><td>${s.chest} — ${esc(s.name)}</td><td>${esc(c.name)}</td><td>${esc(m.division)}</td><td>${m.score}/${c.max}</td></tr>`:""}).join("")}</table></div>`:'<div class="empty">No marks entered yet.</div>';
+}
+function renderResults(){
+let c=competition($("resultCompetition").value),d=$("resultDivision").value;
+$("resultLabel").textContent=c?c.name+" · "+(d||"Choose division"):"Results";
+if(!c||!d){$("resultsTable").innerHTML='<div class="empty">Select a competition and division to view rankings.</div>';return}
+let list=marks.filter(m=>m.competitionId===c.id&&m.division===d&&student(m.studentId)).sort((a,b)=>b.score-a.score);
+if(!list.length){$("resultsTable").innerHTML='<div class="empty">No marks entered for this division yet.</div>';return}
+let rank=0,last=null;
+$("resultsTable").innerHTML=`<div class="tablewrap"><table><tr><th>Rank</th><th>Chest No.</th><th>Student</th><th>Marks</th></tr>${list.map((m,i)=>{if(m.score!==last)rank=i+1;last=m.score;let s=student(m.studentId);return `<tr><td class="rank">${rank===1?"🥇":rank===2?"🥈":rank===3?"🥉":rank}</td><td>${s.chest}</td><td>${esc(s.name)}</td><td><b>${m.score}</b> / ${c.max}</td></tr>`}).join("")}</table></div>`;
+}
+function renderAll(){
+$("totalStudents").textContent=students.length;
+$("totalCompetitions").textContent=competitions.length;
+$("totalMarks").textContent=marks.length;
+renderStudents();renderCompetitions();renderMarks();
+let mc=$("markCompetition").value,rc=$("resultCompetition").value;
+fillSelect("markCompetition",competitions.map(c=>({value:c.id,label:c.name+" ("+c.type+")"})),"Choose competition",mc);
+updateMarkChoices();
+fillSelect("resultCompetition",competitions.filter(c=>c.type===$("resultType").value).map(c=>({value:c.id,label:c.name})),"Choose competition",rc);
+let c=competition($("resultCompetition").value);
+fillSelect("resultDivision",c?c.divisions.map(d=>({value:d,label:d})):[],"Choose division",$("resultDivision").value);
+renderResults();
+}
+renderAll();
+</script>
+</body>
+</html>
