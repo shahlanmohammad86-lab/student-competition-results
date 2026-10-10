@@ -2,199 +2,33 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Student Competition & Results</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Competition Results</title>
 <style>
+:root{--bg:#090d18;--panel:#121a2b;--line:#26334a;--text:#f1f5ff;--muted:#9baac2;--blue:#6485ff;--green:#36d6a0}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
-header{background:#172554;color:white;padding:25px 18px}
-header h1{margin:8px 0;font-size:27px}
-header p{color:#dbeafe}
-main{max-width:950px;margin:auto;padding:18px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.card,.panel{background:white;padding:16px;border-radius:12px;margin-bottom:14px}
-.card span{color:#64748b;font-size:13px}
-.card strong{display:block;font-size:27px;margin-top:8px}
-nav{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0}
-button{border:0;border-radius:8px;padding:11px 14px;background:#e2e8f0;cursor:pointer;font-weight:bold}
-button.active,.primary{background:#1d4ed8;color:white}
-input,select{width:100%;padding:12px;margin:6px 0 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px;background:white}
-label{font-size:14px;font-weight:bold}
-.page{display:none}
-.page.active{display:block}
-table{width:100%;border-collapse:collapse;margin-top:15px}
-th,td{text-align:left;padding:10px;border-bottom:1px solid #e2e8f0;font-size:14px}
-th{background:#f8fafc}
-.tablebox{overflow-x:auto}
-.notice{background:#fff7ed;color:#9a3412;padding:12px;border-radius:9px;font-size:13px;margin-bottom:15px}
-@media(max-width:520px){.cards{grid-template-columns:1fr 1fr}.card:last-child{grid-column:1/-1}header h1{font-size:23px}}
-</style>
-</head>
-<body>
-
-<header>
-<small>COMPETITION MANAGEMENT SYSTEM</small>
-<h1>Student Competition & Results</h1>
-<p>Manage students, competitions, marks and results.</p>
-</header>
-
-<main>
-<div class="notice">
-Prototype only: data is saved in this browser. There is no secure admin login or shared database yet. Do not enter real student information.
-</div>
-
-<div class="cards">
-<div class="card"><span>Total Students</span><strong id="studentCount">0</strong></div>
-<div class="card"><span>Competitions</span><strong id="competitionCount">0</strong></div>
-<div class="card"><span>Marks Entries</span><strong id="marksCount">0</strong></div>
-</div>
-
-<nav>
-<button class="active" onclick="showPage('home',this)">Dashboard</button>
-<button onclick="showPage('students',this)">Students</button>
-<button onclick="showPage('competitions',this)">Competitions</button>
-<button onclick="showPage('marks',this)">Enter Marks</button>
-<button onclick="showPage('results',this)">Results</button>
-</nav>
-
-<section id="home" class="page active">
-<div class="panel">
-<h2>Welcome!</h2>
-<p>Use this website to register students, create competitions, enter marks and view rankings.</p>
-<p>Chest numbers are generated automatically.</p>
-</div>
-</section>
-
-<section id="students" class="page">
-<div class="panel">
-<h2>Register Student</h2>
-<form id="studentForm">
-<label>Student Name</label>
-<input id="studentName" required placeholder="Enter student name">
-<label>Group / Division</label>
-<input id="studentGroup" required placeholder="e.g. Junior A">
-<button class="primary" type="submit">Add Student</button>
-</form>
-<div class="tablebox" id="studentTable"></div>
-</div>
-</section>
-
-<section id="competitions" class="page">
-<div class="panel">
-<h2>Add Competition</h2>
-<form id="competitionForm">
-<label>Competition Name</label>
-<input id="competitionName" required placeholder="e.g. Speech">
-<label>Maximum Marks</label>
-<input id="maxMarks" type="number" min="1" value="100" required>
-<button class="primary" type="submit">Add Competition</button>
-</form>
-<div class="tablebox" id="competitionTable"></div>
-</div>
-</section>
-
-<section id="marks" class="page">
-<div class="panel">
-<h2>Enter Marks</h2>
-<form id="marksForm">
-<label>Student</label>
-<select id="markStudent" required></select>
-<label>Competition</label>
-<select id="markCompetition" required></select>
-<label>Marks Obtained</label>
-<input id="markValue" type="number" min="0" required>
-<button class="primary" type="submit">Save Marks</button>
-</form>
-<div class="tablebox" id="marksTable"></div>
-</div>
-</section>
-
-<section id="results" class="page">
-<div class="panel">
-<h2>Competition Results</h2>
-<p>Students are ranked by their total marks entered so far.</p>
-<div class="tablebox" id="resultsTable"></div>
-</div>
-</section>
-</main>
-
-<script>
-let students=JSON.parse(localStorage.getItem('scr_students')||'[]');
-let competitions=JSON.parse(localStorage.getItem('scr_competitions')||'[]');
-let marks=JSON.parse(localStorage.getItem('scr_marks')||'[]');
-
-function save(){
-localStorage.setItem('scr_students',JSON.stringify(students));
-localStorage.setItem('scr_competitions',JSON.stringify(competitions));
-localStorage.setItem('scr_marks',JSON.stringify(marks));
-render();
-}
-
-function safe(value){
-return String(value).replace(/[&<>"']/g,c=>({
-'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[c]));
-}
-
-function showPage(id,button){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-button.classList.add('active');
-}
-
-function makeTable(headers,rows){
-if(!rows.length)return '<p>No entries yet.</p>';
-return '<table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+
-'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(v=>'<td>'+v+'</td>').join('')+
-'</tr>').join('')+'</tbody></table>';
-}
-
-function render(){
-document.getElementById('studentCount').textContent=students.length;
-document.getElementById('competitionCount').textContent=competitions.length;
-document.getElementById('marksCount').textContent=marks.length;
-
-document.getElementById('studentTable').innerHTML=makeTable(
-['Chest Number','Student Name','Group'],
-students.map(s=>[safe(s.chest),safe(s.name),safe(s.group)])
-);
-
-document.getElementById('competitionTable').innerHTML=makeTable(
-['Competition','Maximum Marks'],
-competitions.map(c=>[safe(c.name),c.max])
-);
-
-document.getElementById('markStudent').innerHTML=students.map(s=>
-'<option value="'+s.id+'">'+safe(s.chest+' - '+s.name)+'</option>'
-).join('');
-
-document.getElementById('markCompetition').innerHTML=competitions.map(c=>
-'<option value="'+c.id+'">'+safe(c.name)+'</option>'
-).join('');
-
-document.getElementById('marksTable').innerHTML=makeTable(
-['Student','Competition','Marks'],
-marks.map(m=>{
-let s=students.find(x=>x.id===m.student);
-let c=competitions.find(x=>x.id===m.competition);
-return [s?safe(s.chest+' - '+s.name):'Unknown',c?safe(c.name):'Unknown',m.value];
-})
-);
-
-let totals=students.map(s=>({
-s:s,
-total:marks.filter(m=>m.student===s.id).reduce((n,m)=>n+Number(m.value),0)
-})).sort((a,b)=>b.total-a.total);
-
-document.getElementById('resultsTable').innerHTML=makeTable(
-['Rank','Chest No.','Student','Group','Total Marks'],
-totals.map((x,i)=>[i+1,safe(x.s.chest),safe(x.s.name),safe(x.s.group),x.total])
-);
-}
-
-document.getElementById('studentForm').addEventListener('submit',function(e){
-e.preventDefault();
-students.push({
-id:Date.now().toString()+Math.random().toString(16).slice(2),
-chest:String(students.reduce((max,s)=>Math.max(max,Number
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:22px 18px;background:#10182a;border-bottom:1px solid var(--line)}
+header h1{font-size:23px;margin:0 0 7px}
+header p{margin:0;color:var(--muted);font-size:13px}
+main{max-width:1100px;margin:auto;padding:18px}
+nav{display:flex;gap:8px;overflow-x:auto;padding-bottom:16px}
+button{border:1px solid var(--line);background:#182238;color:var(--text);padding:11px 14px;border-radius:9px;cursor:pointer;font-weight:600}
+button.active,button.primary{background:var(--blue);color:white;border-color:var(--blue)}
+button.danger{background:#401e2b;border-color:#703047}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.card,.panel{background:var(--panel);border:1px solid var(--line);padding:17px;border-radius:13px;margin-bottom:15px;min-width:0}
+.card span{color:var(--muted);font-size:12px}
+.card strong{display:block;font-size:28px;margin-top:9px}
+h2{font-size:19px;margin:0 0 15px}
+h3{font-size:15px}
+label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
+input,select{width:100%;padding:12px;background:#0b1220;color:var(--text);border:1px solid var(--line);border-radius:8px;font-size:15px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.page{display:none}.page.show{display:block}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:12px 9px;border-bottom:1px solid var(--line)}
+th{color:var(--muted)}
+.tablewrap{overflow
